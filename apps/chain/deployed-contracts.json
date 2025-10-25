@@ -1,0 +1,19 @@
+{
+  "network": "monad",
+  "chainId": 10143,
+  "contracts": {
+    "BugBountyToken": {
+      "address": "0x83F06ECCc61D4D2EcB8C9E516caed9Baa56d606A",
+      "deployedAt": "2025-10-25T10:28:00.000Z"
+    },
+    "BountyPlatform": {
+      "address": "0x8AB8c69917B509Ca4655eCE926cB52546648dB11",
+      "deployedAt": "2025-10-25T10:28:00.000Z"
+    }
+  },
+  "deployment": {
+    "module": "BugBountyPlatformModule",
+    "deployer": "hardhat-ignition",
+    "notes": "Enhanced bug bounty platform with hacker fund approval and NFT rewards"
+  }
+}

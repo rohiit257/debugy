@@ -1,0 +1,84 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  HUNTER
+  ORG
+  ADMIN
+}
+
+model User {
+  id         String   @id @default(cuid())
+  address    String   @unique
+  email      String?  @unique
+  name       String?
+  role       UserRole @default(HUNTER)
+  bio        String?
+  reputation Int      @default(0)
+
+  // Relations
+  bounties    Bounty[]     @relation("OrgBounties")
+  submissions Submission[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Bounty {
+  id          String       @id @default(cuid())
+  title       String
+  description String
+  category    String
+  reward      Float
+  deadline    DateTime
+  status      BountyStatus @default(OPEN)
+
+  // Relations
+  orgId       String
+  org         User         @relation("OrgBounties", fields: [orgId], references: [id])
+  submissions Submission[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum BountyStatus {
+  OPEN
+  CLOSED
+  IN_REVIEW
+  COMPLETED
+}
+
+model Submission {
+  id       String @id @default(cuid())
+  bountyId String
+  hunterId String
+
+  details String // Vulnerability report
+  status  SubmissionStatus @default(PENDING)
+
+  bounty Bounty @relation(fields: [bountyId], references: [id])
+  hunter User   @relation(fields: [hunterId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum SubmissionStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
